@@ -155,3 +155,29 @@ def LinearMapping(current_a, current_b, target_c, target_d, num, returnInt):
     else:
         val = float(val)
         return "{:.2f}".format(val)
+
+
+# Function to remove underscores and capitalize the first letter of each word
+def formatCategoryName(raw_name):
+    words = raw_name.split('_')
+    processed_words = []
+
+    for word in words:
+        if word[0].isdigit() == True:
+            processed_words.append(word)
+        else:
+            processed_words.append(word.capitalize())
+
+    new_name = ''
+    for new_word in processed_words:
+        new_name += new_word + ' '
+
+    return new_name
+
+def longestCatName(cats):
+    maxLen = len(cats[0])
+    for val in cats:
+        if len(val) > maxLen:
+            maxLen = val
+    return maxLen
+
