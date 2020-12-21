@@ -5,14 +5,16 @@ A home for the figures of the Data Mining for Anomaly Detection in Cyber-Physica
 Create a virtual environment and install the dependencies using the requirements.txt file. Here is the installation procedure if you would like to build a copy of the system using the data yourself. Installation in this case is assumed for Linux users, it is also assumed you are using python3 and it is already installed.
 
 ```bash
-    # Create project directory
-    mkdir CPS
+    # Clone the github repository
+    git clone https://github.com/jzaunegger/CPS-Research
+
+    # Navigate into the repository
+    cd CPS-Reseach    
 
     # Create venv
-    python3 -m venv CPS/venv
+    python3 -m venv venv
 
     # Source venv
-    cd CPS
     source venv/bin/activate
 
     # Install Requirements

@@ -1,6 +1,20 @@
+# Import Dependencies
 import os, sys, csv
 from datetime import datetime
 
+####################################################################################################
+# Function that takes a time stamp, and returns the difference from the input time and the UNIX UTC
+# standard time.
+#
+# Input Parameters:
+####################################################################################################
+# current_a     : The smallest value in the current value range
+# current_b     : The largest value in the current value range
+# target_c      : The smallest value in the target value range
+# target_d      : The largest value in the target value range
+# num           : The number to transform
+# returnInt     : Boolean value to determine if the return value is a int or float
+####################################################################################################
 def convertDateTime(timestamp):
     formatted_date = timestamp[0:10]
     formatted_time = timestamp[11:]
@@ -22,7 +36,15 @@ def convertDateTime(timestamp):
     diff = current_utc - past_date
     return diff
 
-
+####################################################################################################
+# Function that will format a target value, and write the formatted values to a new file.
+#
+# Input Parameters:
+####################################################################################################
+# file_path         : The path to the csv file to format,
+# output_folder     : The folder to save the output files in.
+# file_name         : The name of the file to be saved.
+####################################################################################################
 def formatFile(file_path, output_folder, file_name):
 
     # Check if the output folder does not exist
@@ -79,3 +101,29 @@ def formatFile(file_path, output_folder, file_name):
         print("same working directory as this script. This system will only read-in csv files.")
         print(" ")
         sys.exit()
+
+
+####################################################################################################
+# Function that transforms a given value, into a value within a given range.
+#
+# Input Parameters:
+####################################################################################################
+# current_a     : The smallest value in the current value range
+# current_b     : The largest value in the current value range
+# target_c      : The smallest value in the target value range
+# target_d      : The largest value in the target value range
+# num           : The number to transform
+# returnInt     : Boolean value to determine if the return value is a int or float
+####################################################################################################
+def LinearMapping(current_a, current_b, target_c, target_d, num, returnInt):
+    target = (target_d - target_c)
+    current = (current_b - current_a)
+    scale = target / current
+    offset = -current_a * target / current + target_c
+    val = num * scale + offset
+
+    if returnInt:
+        return int(val)
+    else:
+        val = float(val)
+        return "{:.2f}".format(val)
