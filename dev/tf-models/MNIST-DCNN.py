@@ -29,7 +29,7 @@ for i in range(25):
     # The CIFAR labels happen to be arrays, 
     # which is why you need the extra index
     plt.xlabel(class_names[train_labels[i][0]])
-plt.show()
+#plt.show()
 
 
 # Build the model
@@ -50,7 +50,7 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-history = model.fit(train_images, train_labels, epochs=10, 
+history = model.fit(train_images, train_labels, epochs=25, 
                     validation_data=(test_images, test_labels))
 
 plt.plot(history.history['accuracy'], label='accuracy')
@@ -59,6 +59,7 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.ylim([0.5, 1])
 plt.legend(loc='lower right')
+plt.show()
 
 test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
 
