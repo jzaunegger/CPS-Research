@@ -1,5 +1,5 @@
-import os, sys, csv, json, datetime
-from PIL import Image, ImageDraw
+import os, sys, csv, json, datetime, shutil
+from PIL import Image, ImageDraw, ImageFont
 
 def checkPath(path):
     # Check if path exists
@@ -8,8 +8,11 @@ def checkPath(path):
         # Remove any previously exsisting subfiles
         if len(os.listdir(path)) > 0:
             for item in os.listdir(path):
-                
-                os.remove(os.path.join(path, item))
+                temp = os.path.join(path, item)
+                if os.path.isdir(temp):
+                    shutil.rmtree(temp)
+                elif os.path.isfile(temp):
+                     os.remove(temp)
 
     # Create folder
     else:
@@ -21,6 +24,7 @@ class Dataset:
         self.categories = []
         self.input_file_paths = []
         self.input_folder_path = ''
+        self.out_folder = ''
         self.name = name
 
     def convert_to_object(self):
@@ -104,6 +108,19 @@ class Dataset:
         self.batch_size = batch_size
         for cat in self.categories:
             cat.format_data(self.batch_size)
+
+    def visualize_samples(self, out_folder):
+        checkPath(out_folder)
+        self.out_folder = out_folder
+        for cat in self.categories:
+            cat.visualize_samples(self.out_folder)
+
+    def plot_categories(self, out_folder):
+        base_out_folder = os.path.join(out_folder, 'data-plots')
+        checkPath(base_out_folder)
+        self.out_folder = out_folder
+        for cat in self.categories:
+            cat.plot_category(base_out_folder)
 
     def save_images(self, folder_path):
         formatted_out = os.path.join(folder_path, 'image-dataset')
@@ -327,13 +344,157 @@ class Category:
 
             current_img.save(file_path, 'PNG')
 
+    def draw_grid(self):
+        base_image = Image.new('RGB', (2400, 1200), (255, 255, 255))
+        base_draw = ImageDraw.Draw(base_image)
+        head = ImageFont.truetype(font=os.path.join(os.getcwd(), 'DejaVuSans.ttf'), size=40)
 
-    def visualize_samples(self):
+        plot_name = self.name.replace("_", ' ')
+        plot_name = plot_name.capitalize()
+        label_font = ImageFont.truetype(font=os.path.join(os.getcwd(), 'DejaVuSans.ttf'), size=32)
+
+        base_draw.text((1200, 50), plot_name, font=head, fill=(0, 0, 0), anchor='mm', align='center')
+
+        # Draw Y Axis
+        y_axis = [(100, 100), (100, 1100)]
+        base_draw.line(y_axis, fill=(0, 0, 0), width=4)
+
+        # Draw Y Ticks
+        x = 200
+        for i in range(21):
+            points = [(x, 100), (x, 1100)]
+            base_draw.line(points, fill=(0, 0, 0), width=2)
+            x += 100
+
+        # Draw X Axis
+        x_axis = [(100, 1100), (2200, 1100)]
+        base_draw.line(x_axis, fill=(0, 0, 0), width=4)
+        base_draw.text((1200, 1150), 'Time', font=label_font, fill=(0, 0, 0), anchor='mm')
+
+        # Draw X Ticks
+        y = 100
+        for i in range(10):
+            points = [(100, y), (2200, y)]
+            base_draw.line(points, fill=(0, 0, 0), width=2)
+            y += 100
+
+        return base_image
+
+
+    def fit_bounds(self, value, left_min, left_max, right_min, right_max):
+        left_span = left_max - left_min
+        right_span = right_max - right_min
+        scale = float(right_span) / float(left_span)
+        return right_min + (value - left_min) * scale
+
+
+    def fit_entry(self, entry):
+        x = self.fit_bounds(entry[0], 0, 1, 100, 2300)
+        y = self.fit_bounds(entry[1], 0, 1, 100, 1100)
+        return (int(x), int(y))
+
+    def plot_category(self, out_folder):
+        cat_out_folder = os.path.join(out_folder, self.name)
+        checkPath(cat_out_folder)
+
+        img_name = self.name + '-plot.png'
+        img_path = os.path.join(cat_out_folder, img_name)
+        
+        base_image = Image.new('RGB', (2300, 1200), (255, 255, 255))
+        base_draw = ImageDraw.Draw(base_image)
+
+        plot_base = self.draw_grid()
+        base_image.paste(plot_base, (0,0))
+
+        # Process the data to be grouped by sensor
+        data = self.normalized_img_vals
+
+        segments = []
+        for i in range(0, len(data), self.image_width):
+            if i + self.image_width <= len(data):
+                segments.append(data[i:i+(self.image_width)])
+
+        sensor0 = []
+        sensor1 = []
+        sensor2 = []
+        sensor3 = []
+        sensor4 = []
+        sensor5 = []
+        sensor6 = []
+        sensor7 = []
+        sensor8 = []
+        sensor9 = []
+
+        counter = 1
+        for i in range(len(segments)):
+            if counter == 1:
+                sensor0.append( self.fit_entry(segments[i][0]))
+            elif counter == 2:
+                sensor1.append(self.fit_entry(segments[i][1]))
+            elif counter == 3:
+                sensor2.append(self.fit_entry(segments[i][2]))
+            elif counter == 4:
+                sensor3.append(self.fit_entry(segments[i][3]))
+            elif counter == 5:
+                sensor4.append(self.fit_entry(segments[i][4]))
+            elif counter == 6:
+                sensor5.append(self.fit_entry(segments[i][5]))
+            elif counter == 7:
+                sensor6.append(self.fit_entry(segments[i][6]))
+            elif counter == 8:
+                sensor7.append(self.fit_entry(segments[i][7]))
+            elif counter == 9:
+                sensor8.append(self.fit_entry(segments[i][8]))
+            elif counter == 10:
+                sensor9.append(self.fit_entry(segments[i][9]))
+
+            counter += 1
+            if counter > 10:
+                counter = 1
+        sensors = [sensor0, sensor1, sensor2, sensor3, sensor4, sensor5, sensor6, sensor7, sensor8, sensor9]
+        sensor_colors = [ '#fff100', '#ff8c00', '#e81123', '#ec008c', '#68217a', '#00188f', '#00bcf2', '#00b294', '#009e49', '#bad80a' ]
+
+        for i in range(len(sensors)):
+            current_color = sensor_colors[i]
+            base_draw.line(sensors[i], fill=current_color, width=1)
+
+
+
+
+
+        base_image.save(img_path,'PNG')
+
+
+
+
+    def visualize_samples(self, out_folder):
+        self.visualization_folder = out_folder
         if self.image_output_folder == '':
             print('---------------------------------------------------------------------------------------------------------------------------------------------')
             print('Error: Cannot load images..')
             print('Error-Msg: Cannot load folder, because the images you are trying to visualize do not yet exist.')
             print('---------------------------------------------------------------------------------------------------------------------------------------------')
+        else:
+            # Check how many images exist
+            sub_files = sorted(os.listdir(self.image_output_folder))
+            cat_out_folder = os.path.join(self.visualization_folder, self.name)
+            checkPath(cat_out_folder)
+
+            if len(sub_files) > 5:
+                base_size = (self.image_width * 2, self.image_height * 6)
+                base_image = Image.new('RGB', base_size, (255, 255, 255))
+                base_image_name = os.path.join(cat_out_folder, self.name + '-visualzation.png')
+                
+                sample_paths = sub_files[0:5]
+                for i in range(len(sample_paths)):
+                    x_pos = int(self.image_width / 2)
+                    y_pos = int(self.image_height * i + (self.image_height/2))
+                    img_path = os.path.join(self.image_output_folder, sample_paths[i])
+                    current_img = Image.open(img_path)
+
+                    base_image.paste(current_img, (x_pos, y_pos))
+                
+                base_image.save(base_image_name, 'PNG')
 
     
     # What the console prints the object as when called as a string

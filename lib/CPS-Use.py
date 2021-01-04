@@ -4,14 +4,9 @@ from CPS import *
 ds = Dataset('CPS')
 ds.read_files(os.path.join(os.getcwd(), 'raw-dataset'))
 ds.format_dataset(10)
-
-#ds.log_dataset()
-
-#ds.export_dataset(ds, os.path.join(os.getcwd(), 'CPS-Dataset'))
+ds.export_dataset(ds, os.path.join(os.getcwd(), 'CPS-Dataset'))
 ds.convert_to_images(20)
+ds.plot_categories(os.path.join(os.getcwd(), 'CPS-Dataset'))
 ds.save_images(os.path.join(os.getcwd(), 'CPS-Dataset'))
+ds.visualize_samples(os.path.join(os.getcwd(), 'CPS-Dataset', 'visualization-images'))
 ds.log_image_dataset()
-
-#print(ds.categories)
-#print(len(ds.categories[0].raw_entries))
-#print(len(ds.categories[0].formatted_values))
