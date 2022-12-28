@@ -1,0 +1,16 @@
+ShuffleNet
+------------------------------------------------------------------------------------------
+MiniBatchSize, 25
+MaxEpochs, 5
+ExecutionEnvironment, 'gpu'
+InitialLearnRate,1e-4
+ValidationData,validationSet
+ValidationFrequency, 10
+ValidationPatience, Inf
+Verbose, false
+Plots, 'training-progress');
+------------------------------
+Exe Time: 
+    130 Mins, 29 Secs
+    2 Hours,  10 Mins, 29 Secs
+Training Acc: 96.80

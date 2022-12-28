@@ -1,0 +1,16 @@
+VGG19
+------------------------------------------------------------------------------------------
+MiniBatchSize, 25
+MaxEpochs, 5
+ExecutionEnvironment, 'gpu'
+InitialLearnRate,1e-4
+ValidationData,validationSet
+ValidationFrequency, 10
+ValidationPatience, Inf
+Verbose, false
+Plots, 'training-progress');
+------------------------------
+Exe Time: 
+    670 mins, 47 seconds
+    11 Hours, 10 Minues, and 47 Seconds
+Training Acc: 96.80

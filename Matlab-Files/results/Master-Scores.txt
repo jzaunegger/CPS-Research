@@ -1,0 +1,17 @@
+|-----------------------------------------------------------
+| Network Name    | Execution Time             | Val. Acc. |
+|-----------------------------------------------------------
+| AlexNet         | 01 Hours, 00 Mins, 19 Secs |   92.56   |
+| DarkNet19       | 04 Hours, 27 Mins, 04 Secs |   88.97   |
+| DarkNet53       | 11 Hours, 55 Mins, 46 Secs |   97.29   |
+| GoogLeNet       | 02 Hours, 11 Mins, 14 Secs |   92.56   |
+| LeNet           | 02 Hours, 09 Mins, 39 Secs |   92.12   |
+| MobileNet-V2    | 03 Hours, 07 Mins, 36 Secs |   97.29   |
+| ResNet18        | 02 Hours, 11 Mins, 48 Secs |   92.78   |
+| ResNet50        | 05 Hours, 29 Mins, 00 Secs |   96.80   |
+| ResNet101       | 09 Hours, 13 Mins, 10 Secs |   97.29   |
+| ShuffleNet      | 01 Hours, 11 Mins, 32 Secs |   96.63   |
+| SqueezeNet      | 02 Hours, 10 Mins, 29 Secs |   96.80   |
+| VGG16           | 09 Hours, 15 Mins, 17 Secs |   97.29   |
+| VGG19           | 11 Hours, 10 Mins, 47 Secs |   96.80   |
+|-----------------------------------------------------------
